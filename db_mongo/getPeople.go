@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func GetPeople(p *Pool) ([]types.Person, int, error) {
+func GetPeople(p *Pool, parentCtx context.Context, dbName string) ([]types.Person, int, error) {
 	var people []types.Person
 
 	//var client *mongo.Client
@@ -19,10 +19,10 @@ func GetPeople(p *Pool) ([]types.Person, int, error) {
 	}
 	defer p.Restock(client)
 
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
-	//client, _ = mongo.Connect(ctx, clientOptions)
-	collection := client.Database("thepolyglotdeveloper").Collection("people")
+	ctx, cancel := context.WithTimeout(parentCtx, 10*time.Second)
+	defer cancel()
+
+	collection := client.Database(dbName).Collection("people")
 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {

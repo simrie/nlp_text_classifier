@@ -51,7 +51,7 @@ func (p *Pool) Borrow() (*mongo.Client, error) {
 	client = p.Connections[0]
 	p.Connections = p.Connections[1:]
 	p.Mutex.Unlock()
-
+	fmt.Println("borrowed")
 	return client, nil
 }
 
@@ -59,4 +59,5 @@ func (p *Pool) Restock(client *mongo.Client) {
 	p.Mutex.Lock()
 	p.Connections = append(p.Connections, client)
 	p.Mutex.Unlock()
+	fmt.Println("restocked")
 }

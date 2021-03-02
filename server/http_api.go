@@ -32,7 +32,16 @@ func GetPeopleEndpoint(p *db_mongo.Pool, response http.ResponseWriter, request *
 	var people []types.Person
 	var status int
 	var err error
-	people, status, err = db_mongo.GetPeople(p)
+	var ctx = request.Context()
+	vars := mux.Vars(request)
+	db_param, ok := vars["db"]
+	if !ok {
+		response.WriteHeader(400)
+		response.Write([]byte(`{ "message": "db parameter not defined" }`))
+		return
+	}
+	fmt.Println(vars)
+	people, status, err = db_mongo.GetPeople(p, ctx, db_param)
 	if err != nil {
 		response.WriteHeader(status)
 		response.Write([]byte(`{ "message": "` + err.Error() + `" }`))
@@ -45,6 +54,7 @@ func StartRouter(db_pool *db_mongo.Pool) {
 	router := mux.NewRouter()
 	router.HandleFunc("/person", handler).Methods("POST")
 	router.HandleFunc("/people", PoolHandler(db_pool)).Methods("GET")
+	router.HandleFunc("/db/{db}/people", PoolHandler(db_pool)).Methods("GET")
 	router.HandleFunc("/person/{id}", handler).Methods("GET")
 	http.ListenAndServe(":12345", router)
 }
