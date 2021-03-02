@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"nlp_text_classifier/db_mongo"
+	"nlp_text_classifier/db/db_mongo"
 	"nlp_text_classifier/types"
 
 	"github.com/gorilla/mux"
@@ -20,14 +20,14 @@ func handler(response http.ResponseWriter, request *http.Request) {
 	fmt.Printf("handler %s\n", request.RequestURI)
 }
 
-func PoolHandler(p *db_mongo.Pool) http.HandlerFunc {
+func PoolHandler(p types.DB_Pool) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		GetPeopleEndpoint(p, w, r)
 	}
 	return http.HandlerFunc(fn)
 }
 
-func GetPeopleEndpoint(p *db_mongo.Pool, response http.ResponseWriter, request *http.Request) {
+func GetPeopleEndpoint(p types.DB_Pool, response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
 	var people []types.Person
 	var status int
@@ -41,7 +41,7 @@ func GetPeopleEndpoint(p *db_mongo.Pool, response http.ResponseWriter, request *
 		return
 	}
 	fmt.Println(vars)
-	people, status, err = db_mongo.GetPeople(p, ctx, db_param)
+	people, status, err = p.GetPeople(ctx, db_param)
 	if err != nil {
 		response.WriteHeader(status)
 		response.Write([]byte(`{ "message": "` + err.Error() + `" }`))
@@ -50,7 +50,7 @@ func GetPeopleEndpoint(p *db_mongo.Pool, response http.ResponseWriter, request *
 	json.NewEncoder(response).Encode(people)
 }
 
-func StartRouter(db_pool *db_mongo.Pool) {
+func StartRouter(db_pool db_mongo.Pool) {
 	router := mux.NewRouter()
 	router.HandleFunc("/person", handler).Methods("POST")
 	router.HandleFunc("/people", PoolHandler(db_pool)).Methods("GET")

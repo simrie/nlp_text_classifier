@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"nlp_text_classifier/db_mongo"
+	"nlp_text_classifier/db/db_mongo"
 	"nlp_text_classifier/server"
 )
 
@@ -18,5 +18,5 @@ func main() {
 		return
 	}
 
-	server.StartRouter(&pool)
+	server.StartRouter(pool)
 }
