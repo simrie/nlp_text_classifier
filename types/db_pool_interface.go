@@ -10,6 +10,6 @@ import (
 type DB_Pool interface {
 	Borrow() (interface{}, error)
 	Restock(interface{}) error
-	GetPeople(parentCtx context.Context, dbName string) ([]Person, int, error)
+	GetProfiles(parentCtx context.Context, dbName string) ([]Person, int, error)
 	GetDatabases(parentCtx context.Context) ([]string, int, error)
 }
