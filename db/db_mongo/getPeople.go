@@ -14,7 +14,6 @@ import (
 func (p Pool) GetPeople(parentCtx context.Context, dbName string) ([]types.Person, int, error) {
 	var people []types.Person
 
-	//var client *mongo.Client
 	c, err := p.Borrow()
 	if err != nil {
 		return nil, 0, err
@@ -33,7 +32,7 @@ func (p Pool) GetPeople(parentCtx context.Context, dbName string) ([]types.Perso
 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
-		return people, http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
 
 	defer cursor.Close(ctx)
@@ -44,7 +43,7 @@ func (p Pool) GetPeople(parentCtx context.Context, dbName string) ([]types.Perso
 		people = append(people, person)
 	}
 	if err := cursor.Err(); err != nil {
-		return people, http.StatusInternalServerError, err
+		return nil, http.StatusInternalServerError, err
 	}
 	return people, http.StatusOK, nil
 }

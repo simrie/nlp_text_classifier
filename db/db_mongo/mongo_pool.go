@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type Pool should implement interface DB_Pool
+// type Pool must implement interface DB_Pool
 
 type Pool struct {
 	Connections []*mongo.Client
