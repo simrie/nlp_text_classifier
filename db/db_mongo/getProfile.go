@@ -8,13 +8,14 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (p Pool) GetProfile(parentCtx context.Context, dbName string, docID string) (types.Person, int, error) {
+func (p Pool) GetProfile(parentCtx context.Context, dbName string, idStr string) (types.Person, int, error) {
 	var person types.Person
 	var err error
-	//var objId primitive.ObjectID
+	var docID primitive.ObjectID
 
 	c, err := p.Borrow()
 	if err != nil {
@@ -35,6 +36,10 @@ func (p Pool) GetProfile(parentCtx context.Context, dbName string, docID string)
 	// useful info on BSON filter and converting string to BSON primitive.ObjectID
 	// https://kb.objectrocket.com/mongo-db/how-to-find-a-mongodb-document-by-its-bson-objectid-using-golang-452
 
+	docID, err = primitive.ObjectIDFromHex(idStr)
+	if err != nil {
+		return types.Person{}, http.StatusInternalServerError, err
+	}
 	err = collection.FindOne(ctx, bson.M{"_id": docID}).Decode(&person)
 	if err != nil {
 		return types.Person{}, http.StatusInternalServerError, err

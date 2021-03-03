@@ -26,10 +26,14 @@ func HandlerSelector(p types.DB_Pool, endpoint string) http.HandlerFunc {
 		fn = func(w http.ResponseWriter, r *http.Request) {
 			GetProfilesHandler(p, w, r)
 		}
-	case "/profile/id/":
+	case "/profile/db/id/":
 		fn = func(w http.ResponseWriter, r *http.Request) {
 			GetProfileHandler(p, w, r)
-		}	
+		}
+	case "/load/doc/db":
+		fn = func(w http.ResponseWriter, r *http.Request) {
+			StoreProfilesHandler(p, w, r)
+		}
 	default:
 		fn = func(w http.ResponseWriter, r *http.Request) {
 			HandlerPlaceholder(w, r)
@@ -40,9 +44,11 @@ func HandlerSelector(p types.DB_Pool, endpoint string) http.HandlerFunc {
 
 func StartRouter(db_pool db_mongo.Pool) {
 	router := mux.NewRouter()
-	router.HandleFunc("/profile/", HandlerSelector(db_pool, "/profile/")).Methods("POST")
+	router.HandleFunc("/load/csv/db/{db}/key/{keycol}/text/{textcol}/tag/{tagcol}", HandlerSelector(db_pool, "/load/csv/db")).Methods("POST")
+	router.HandleFunc("/load/doc/db/{db}", HandlerSelector(db_pool, "/load/doc/db")).Methods("POST")
+	router.HandleFunc("/profile", HandlerSelector(db_pool, "/profile")).Methods("POST")
 	router.HandleFunc("/databases", HandlerSelector(db_pool, "/databases")).Methods("GET")
 	router.HandleFunc("/profiles/db/{db}", HandlerSelector(db_pool, "/profiles/db/")).Methods("GET")
-	router.HandleFunc("/profile/id/{id}", HandlerSelector(db_pool, "/profile/id/")).Methods("GET")
+	router.HandleFunc("/profile/db/{db}/id/{id}", HandlerSelector(db_pool, "/profile/db/id/")).Methods("GET")
 	http.ListenAndServe(":12345", router)
 }

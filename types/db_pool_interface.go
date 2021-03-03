@@ -13,5 +13,6 @@ type DB_Pool interface {
 	Restock(interface{}) error
 	GetDatabases(parentCtx context.Context) ([]string, int, error)
 	GetProfiles(parentCtx context.Context, dbName string) ([]Person, int, error)
-	GetProfile(parentCtx context.Context, dbName string, docID string) (Person, int, error)
+	GetProfile(parentCtx context.Context, dbName string, idStr string) (Person, int, error)
+	StoreProfiles(parentCtx context.Context, dbName string, people []interface{}) (int, int, error)
 }
