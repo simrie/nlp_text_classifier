@@ -26,6 +26,10 @@ func HandlerSelector(p types.DB_Pool, endpoint string) http.HandlerFunc {
 		fn = func(w http.ResponseWriter, r *http.Request) {
 			GetProfilesHandler(p, w, r)
 		}
+	case "/profile/id/":
+		fn = func(w http.ResponseWriter, r *http.Request) {
+			GetProfileHandler(p, w, r)
+		}	
 	default:
 		fn = func(w http.ResponseWriter, r *http.Request) {
 			HandlerPlaceholder(w, r)

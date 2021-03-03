@@ -5,11 +5,13 @@ import (
 )
 
 // By using an interface to define database methods
-// we could switch between different databases for the backend
+// the APIs could be switched to a different database
+// by passing a different DB_Pool inmplementation
 
 type DB_Pool interface {
 	Borrow() (interface{}, error)
 	Restock(interface{}) error
-	GetProfiles(parentCtx context.Context, dbName string) ([]Person, int, error)
 	GetDatabases(parentCtx context.Context) ([]string, int, error)
+	GetProfiles(parentCtx context.Context, dbName string) ([]Person, int, error)
+	GetProfile(parentCtx context.Context, dbName string, docID string) (Person, int, error)
 }
