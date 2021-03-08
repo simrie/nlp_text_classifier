@@ -247,7 +247,7 @@ func CamelCaseSplitAndRejoin(text string) string {
 	var replacementList = make(map[string]string)
 
 	var valid = make(map[string]bool)
-	for _, v := range ProseTagList_WordsOnly {
+	for _, v := range ProseTagListWordsOnly {
 		valid[v] = true
 	}
 

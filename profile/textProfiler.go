@@ -26,7 +26,8 @@ func (rawDoc RawDoc) TextProfiler() (Profile, error) {
 		return Profile{}, err
 	}
 
-	var blockMap BlockMap = make(BlockMap)
+	var blockMap = make(map[string]Block)
+	var blockMapType = BlockMapType{BlockMap: blockMap}
 	var blocks []Block
 
 	for _, tok := range proseDoc.Tokens() {
@@ -34,7 +35,7 @@ func (rawDoc RawDoc) TextProfiler() (Profile, error) {
 		stem := nlp.Stemmer(tok.Text)
 		miniStem := nlp.Minifier(stem)
 
-		blockMap, err = UpdateBlockMap(blockMap, miniStem, tok)
+		err = blockMapType.UpdateBlockMap(miniStem, tok)
 	}
 
 	// convert blockMap to array of blocks

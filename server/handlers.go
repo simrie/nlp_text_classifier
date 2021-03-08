@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"nlp_text_classifier/db"
 	"nlp_text_classifier/profile"
-	"nlp_text_classifier/types"
 
 	"github.com/gorilla/mux"
 )
@@ -21,9 +21,9 @@ func HandlerPlaceholder(response http.ResponseWriter, request *http.Request) {
 /*
 GetProfilesHandler returns all the profiles in a database
 */
-func GetProfilesHandler(p types.DB_Pool, response http.ResponseWriter, request *http.Request) {
+func GetProfilesHandler(p db.Pool, response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
-	var people []types.Person
+	var profiles []profile.Profile
 	var status int
 	var err error
 	var ctx = request.Context()
@@ -35,21 +35,21 @@ func GetProfilesHandler(p types.DB_Pool, response http.ResponseWriter, request *
 		return
 	}
 	fmt.Println(vars)
-	people, status, err = p.GetProfiles(ctx, dbParam)
+	profiles, status, err = p.GetProfiles(ctx, dbParam)
 	if err != nil {
 		response.WriteHeader(status)
 		response.Write([]byte(`{ "message": "` + err.Error() + `" }`))
 		return
 	}
-	json.NewEncoder(response).Encode(people)
+	json.NewEncoder(response).Encode(profiles)
 }
 
 /*
 GetProfileHandler returns a profile given a database and id
 */
-func GetProfileHandler(p types.DB_Pool, response http.ResponseWriter, request *http.Request) {
+func GetProfileHandler(p db.Pool, response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
-	var person types.Person
+	var profile profile.Profile
 	var status int
 	var err error
 	var ctx = request.Context()
@@ -67,19 +67,19 @@ func GetProfileHandler(p types.DB_Pool, response http.ResponseWriter, request *h
 		return
 	}
 	fmt.Println(vars)
-	person, status, err = p.GetProfile(ctx, dbParam, idParam)
+	profile, status, err = p.GetProfile(ctx, dbParam, idParam)
 	if err != nil {
 		response.WriteHeader(status)
 		response.Write([]byte(`{ "message": "` + err.Error() + `" }`))
 		return
 	}
-	json.NewEncoder(response).Encode(person)
+	json.NewEncoder(response).Encode(profile)
 }
 
 /*
 GetDatabasesHandler returns a list of databases
 */
-func GetDatabasesHandler(p types.DB_Pool, response http.ResponseWriter, request *http.Request) {
+func GetDatabasesHandler(p db.Pool, response http.ResponseWriter, request *http.Request) {
 	response.Header().Set("content-type", "application/json")
 	var databases []string
 	var status int
@@ -100,11 +100,11 @@ func GetDatabasesHandler(p types.DB_Pool, response http.ResponseWriter, request 
 /*
 StoreProfilesHandler stores documents
 */
-func StoreProfilesHandler(p types.DB_Pool, response http.ResponseWriter, request *http.Request) {
+func StoreProfilesHandler(p db.Pool, response http.ResponseWriter, request *http.Request) {
 
 	response.Header().Set("content-type", "application/json")
 
-	var people []types.Person
+	var profiles []profile.Profile
 	var status int
 	var stored int
 	var err error
@@ -129,7 +129,7 @@ func StoreProfilesHandler(p types.DB_Pool, response http.ResponseWriter, request
 	decoder := json.NewDecoder(request.Body)
 	// DisallowUnknownFields errors if user includes unknown fields.
 	//decoder.DisallowUnknownFields()
-	err = decoder.Decode(&people)
+	err = decoder.Decode(&profiles)
 	if err != nil {
 		status = http.StatusBadRequest
 		response.WriteHeader(status)
@@ -138,8 +138,8 @@ func StoreProfilesHandler(p types.DB_Pool, response http.ResponseWriter, request
 	}
 
 	// convert structured body to interface
-	docs := make([]interface{}, len(people))
-	for i, v := range people {
+	docs := make([]interface{}, len(profiles))
+	for i, v := range profiles {
 		docs[i] = v
 	}
 
@@ -155,7 +155,7 @@ func StoreProfilesHandler(p types.DB_Pool, response http.ResponseWriter, request
 /*
 GetProfileRawDocHandler extracts a profile from a rawDoc
 */
-func GetProfileRawDocHandler(p types.DB_Pool, response http.ResponseWriter, request *http.Request) {
+func GetProfileRawDocHandler(p db.Pool, response http.ResponseWriter, request *http.Request) {
 
 	response.Header().Set("content-type", "application/json")
 

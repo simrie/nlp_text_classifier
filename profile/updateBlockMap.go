@@ -5,10 +5,11 @@ import (
 )
 
 /*
-UpdateBlockMap updates the BlockMap
+UpdateBlockMap updates the BlockMap using BlockMapType as receiver
 */
-func UpdateBlockMap(blockMap BlockMap, miniStem string, token prose.Token) (BlockMap, error) {
+func (blockMapType *BlockMapType) UpdateBlockMap(miniStem string, token prose.Token) error {
 
+	var blockMap map[string]Block = blockMapType.BlockMap
 	var block Block
 	var ok bool
 	var wordSeen = WordSeen{Word: token.Text, Seen: 1}
@@ -18,7 +19,7 @@ func UpdateBlockMap(blockMap BlockMap, miniStem string, token prose.Token) (Bloc
 		block = Block{MiniStem: miniStem, Weight: 1, Count: 1}
 		block.Source = []WordSeen{wordSeen}
 		blockMap[miniStem] = block
-		return blockMap, nil
+		return nil
 	}
 	var hasWordAt int = -1
 	for i, v := range block.Source {
@@ -35,5 +36,5 @@ func UpdateBlockMap(blockMap BlockMap, miniStem string, token prose.Token) (Bloc
 	block.Count = block.Count + 1
 	blockMap[miniStem] = block
 
-	return blockMap, nil
+	return nil
 }

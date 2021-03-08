@@ -1,4 +1,4 @@
-package db_mongo
+package dbmongo
 
 import (
 	"context"
@@ -11,16 +11,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type Pool must implement interface DB_Pool
-
+/*
+Pool must implement interface db.Pool
+*/
 type Pool struct {
 	Connections []*mongo.Client
 	Mutex       *sync.Mutex
 }
 
-// Simple pooling code was partly inspired by
-// https://www.reddit.com/r/golang/comments/63w8u1/restful_api_without_openingclosing_database_for/
-
+/*
+Init initializes a Mongo DB pool
+*/
 func Init(poolSize int, uri string) (Pool, error) {
 	if poolSize <= 0 {
 		return Pool{}, errors.New("invalid poolSize")
@@ -42,6 +43,9 @@ func Init(poolSize int, uri string) (Pool, error) {
 	return pool, nil
 }
 
+/*
+Borrow implements db.Pool interface
+*/
 func (p Pool) Borrow() (interface{}, error) {
 	if len(p.Connections) == 0 {
 		return nil, errors.New("Cannot return connection")
@@ -57,6 +61,9 @@ func (p Pool) Borrow() (interface{}, error) {
 	return client, nil
 }
 
+/*
+Restock implements db.Pool interface
+*/
 func (p Pool) Restock(c interface{}) error {
 	// assert client as *mongo.Client
 	client, ok := c.(*mongo.Client)

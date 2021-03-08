@@ -3,8 +3,7 @@ package server
 import (
 	"net/http"
 
-	"nlp_text_classifier/db/db_mongo"
-	"nlp_text_classifier/types"
+	"nlp_text_classifier/db"
 
 	"github.com/gorilla/mux"
 )
@@ -12,7 +11,7 @@ import (
 /*
 HandlerSelector ties the api endspoint to a function in a package
 */
-func HandlerSelector(p types.DB_Pool, endpoint string) http.HandlerFunc {
+func HandlerSelector(p db.Pool, endpoint string) http.HandlerFunc {
 	var fn http.HandlerFunc
 	switch endpoint {
 	case "/databases":
@@ -46,7 +45,7 @@ func HandlerSelector(p types.DB_Pool, endpoint string) http.HandlerFunc {
 /*
 StartRouter defines the endpoints that use the db_pool for database connections
 */
-func StartRouter(dbPool db_mongo.Pool) {
+func StartRouter(dbPool db.Pool) {
 	router := mux.NewRouter()
 	router.HandleFunc("/load/csv/db/{db}/key/{keycol}/text/{textcol}/tag/{tagcol}", HandlerSelector(dbPool, "/load/csv/db")).Methods("POST")
 	router.HandleFunc("/load/doc/db/{db}", HandlerSelector(dbPool, "/load/doc/db")).Methods("POST")
