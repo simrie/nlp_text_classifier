@@ -1,4 +1,4 @@
-package db_mongo
+package dbmongo
 
 import (
 	"context"
@@ -10,6 +10,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+/*
+GetDatabases returns a list of databases
+*/
 func (p Pool) GetDatabases(parentCtx context.Context) ([]string, int, error) {
 	var databases []string
 	var err error
