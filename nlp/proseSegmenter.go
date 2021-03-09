@@ -122,12 +122,9 @@ func Minifier(text string) string {
 	word = strings.ToLower(word)
 	word = strings.TrimSpace(word)
 
-	// keep all if length less than
+	// keep all if length less than minPrefix
 	var minPrefix = 4
 	var keepPrefix, restOfWord = PreserveMinPrefix(word, minPrefix)
-
-	// preserve first letter if vowel
-	//var keepVowel = PreserveInitialVowel(word)
 
 	// remove vowels
 	for _, vowel := range vowels {
@@ -135,11 +132,8 @@ func Minifier(text string) string {
 	}
 
 	word = fmt.Sprintf("%s%s", keepPrefix, restOfWord)
-	//word = fmt.Sprintf("%s%s", keepVowel, word)
-	// convert to caps
 	word = strings.ToUpper(word)
 
-	// remove double-consonants
-
+	// TODO: consider singular consonent for double-consonents
 	return word
 }
