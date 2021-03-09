@@ -12,11 +12,11 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-func isMn(r rune) bool {
-	return unicode.Is(unicode.Mn, r) // Mn: nonspacing marks
-}
-
-func AsciiFold(in string) string {
+/*
+ASCIIFold removes accents from strings
+//https://stackoverflow.com/questions/24588295/go-removing-accents-from-strings
+*/
+func ASCIIFold(in string) string {
 	if in == "" {
 		return in
 	}
@@ -25,140 +25,10 @@ func AsciiFold(in string) string {
 	return normStr1
 }
 
-func FixBrokenHtmlEntities(in string) string {
-	//&apos;
-	apos := " & apos; s"
-	in = strings.ReplaceAll(in, apos, "'s")
-	apos = " & apos;s"
-	in = strings.ReplaceAll(in, apos, "'s")
-	apos = "&apos;s"
-	in = strings.ReplaceAll(in, apos, "'s")
-	apos = "& apos;s"
-	in = strings.ReplaceAll(in, apos, "'s")
-	apos = "& apos;"
-	in = strings.ReplaceAll(in, apos, "'")
-	apos = "&apos;"
-	in = strings.ReplaceAll(in, apos, "'")
-	apos = " &apos;"
-	in = strings.ReplaceAll(in, apos, "'")
-	//&amp;
-	amp := "& amp;"
-	in = strings.ReplaceAll(in, amp, "&")
-	amp = "&amp;"
-	in = strings.ReplaceAll(in, amp, "&")
-	//&nbsp;
-	nbsp := "& nbsp;"
-	in = strings.ReplaceAll(in, nbsp, " ")
-	nbsp = "&nbsp;"
-	in = strings.ReplaceAll(in, nbsp, " ")
-	//&lt;
-	lt := "& lt;"
-	in = strings.ReplaceAll(in, lt, "<")
-	lt = "&lt;"
-	in = strings.ReplaceAll(in, lt, "<")
-	//&gt;
-	gt := "& gt;"
-	in = strings.ReplaceAll(in, gt, ">")
-	gt = "&gt;"
-	in = strings.ReplaceAll(in, gt, ">")
-	//&quot;
-	quot := "& quot;"
-	in = strings.ReplaceAll(in, quot, "'")
-	quot = "&quot;"
-	in = strings.ReplaceAll(in, quot, "'")
-	//&reg; [TM], &circledR;
-	reg := "& reg;"
-	in = strings.ReplaceAll(in, reg, "[TM]")
-	reg = "&reg;"
-	in = strings.ReplaceAll(in, reg, "[TM]")
-	reg = "& circledR;"
-	in = strings.ReplaceAll(in, reg, "[TM]")
-	reg = "&circledR;"
-	in = strings.ReplaceAll(in, reg, "[TM]")
-	//&copy; [copyright]
-	copy := "& copy;"
-	in = strings.ReplaceAll(in, copy, "[copyright]")
-	copy = "&copy;"
-	in = strings.ReplaceAll(in, copy, "[copyright]")
-	//&cent; [cents]
-	cent := "& cent;"
-	in = strings.ReplaceAll(in, cent, "[cents]")
-	cent = "&cent;"
-	in = strings.ReplaceAll(in, cent, "[cents]")
-	//&pound; [pounds]
-	pound := "& pound;"
-	in = strings.ReplaceAll(in, pound, "[pounds]")
-	pound = "&pound;"
-	in = strings.ReplaceAll(in, pound, "[pounds]")
-	//&yen; [yen]
-	yen := "& yen;"
-	in = strings.ReplaceAll(in, yen, "[yen]")
-	yen = "&yen;"
-	in = strings.ReplaceAll(in, yen, "[yen]")
-	//&euro; [euros]
-	euro := "& euro;"
-	in = strings.ReplaceAll(in, euro, "[euros]")
-	euro = "&euro;"
-	in = strings.ReplaceAll(in, euro, "[euros]")
-	//&commat;
-	commat := "& commat;"
-	in = strings.ReplaceAll(in, commat, "@")
-	commat = "&commat;"
-	in = strings.ReplaceAll(in, commat, "@")
-	//&bull;
-	bull := "& bull;"
-	in = strings.ReplaceAll(in, bull, " *")
-	bull = "&bull;"
-	in = strings.ReplaceAll(in, bull, " *")
-	return in
-}
-
-func ReplaceHtmlListItemsWithColon(in string) string {
-	if in == "" {
-		return in
-	}
-	// match html tag and replace it with ""
-	// regex to match html tag
-	const pattern = `(<\/?[a-zA-Z]+?[^>]*\/?>)*`
-	r := regexp.MustCompile(pattern)
-	groups := r.FindAllString(in, -1)
-
-	// sort shorter items to replace list items with colon
-	sort.Slice(groups, func(i, j int) bool {
-		return len(groups[i]) < len(groups[j])
-	})
-	for _, group := range groups {
-		if group == "" {
-			continue
-		}
-		lc_group := strings.ToLower(strings.TrimSpace(group))
-		if lc_group == "<br>" {
-			in = strings.ReplaceAll(in, group, " ")
-			continue
-		}
-		if lc_group == "<ul><li>" {
-			in = strings.ReplaceAll(in, group, " ")
-			continue
-		}
-		if lc_group == "</li><li>" {
-			in = strings.ReplaceAll(in, group, "; ")
-			continue
-		}
-		if lc_group == "</li></ul>" {
-			in = strings.ReplaceAll(in, group, ". ")
-			continue
-		}
-		if lc_group == "<ul><li>" {
-			in = strings.ReplaceAll(in, group, " ")
-			continue
-		}
-	}
-	// fix ".;"
-	in = strings.ReplaceAll(in, ".;", ". ")
-	return in
-}
-
-func RemoveHtmlTag(in string) string {
+/*
+RemoveHTMLTags removes tags leaving content
+*/
+func RemoveHTMLTags(in string) string {
 	if in == "" {
 		return in
 	}
@@ -177,15 +47,18 @@ func RemoveHtmlTag(in string) string {
 		if group == "" {
 			continue
 		}
-		lc_group := strings.ToLower(strings.TrimSpace(group))
-		if lc_group != "" {
-			in = strings.ReplaceAll(in, group, "")
+		lcGroup := strings.ToLower(strings.TrimSpace(group))
+		if lcGroup != "" {
+			in = strings.ReplaceAll(in, group, " ")
 			continue
 		}
 	}
 	return in
 }
 
+/*
+RemoveTabsAndLineFeeds removes tabs and line feeds
+*/
 func RemoveTabsAndLineFeeds(in string) string {
 	if in == "" {
 		return in
@@ -196,6 +69,9 @@ func RemoveTabsAndLineFeeds(in string) string {
 	return in
 }
 
+/*
+RemoveNonSpaceNonAlphanumeric removes all but letters and numbers
+*/
 func RemoveNonSpaceNonAlphanumeric(in string) (string, error) {
 	if in == "" {
 		return in, nil
@@ -205,10 +81,13 @@ func RemoveNonSpaceNonAlphanumeric(in string) (string, error) {
 	if err != nil {
 		return in, err
 	}
-	processedString := reg.ReplaceAllString(in, "")
+	processedString := reg.ReplaceAllString(in, " ")
 	return processedString, nil
 }
 
+/*
+CompressSpaces removes excessive spaces
+*/
 func CompressSpaces(in string) string {
 	str := in
 	str = strings.ReplaceAll(str, "   ", " ")
@@ -216,6 +95,9 @@ func CompressSpaces(in string) string {
 	return str
 }
 
+/*
+CamelCaseSplitter splits camel case words
+*/
 func CamelCaseSplitter(text string) string {
 	splitted := camelCaseSplitter.Split(text)
 	if splitted[0] == text {
@@ -223,10 +105,10 @@ func CamelCaseSplitter(text string) string {
 	}
 	// Need special consideration for splitted punctuation
 	// If apostrophe before or after word, do not join with space
-	test_join := strings.Join(splitted, "")
+	testJoin := strings.Join(splitted, "")
 	words := ""
-	if strings.Index(test_join, "'") >= 0 {
-		words = test_join
+	if strings.Index(testJoin, "'") >= 0 {
+		words = testJoin
 	} else {
 		// join back with spaces between
 		words = strings.Join(splitted, " ")
@@ -242,27 +124,20 @@ func CamelCaseSplitter(text string) string {
 	return words
 }
 
+/*
+CamelCaseSplitAndRejoin returns split words joined by a string
+*/
 func CamelCaseSplitAndRejoin(text string) string {
+	// TODO: call this as a Goroutine
+	//       or not as part of text normalization
+	//       because Prose Segmenter is a bottleneck in processing
 	doc, _ := MakeSegmenter(text)
 	var replacementList = make(map[string]string)
 
-	var valid = make(map[string]bool)
-	for _, v := range ProseTagListWordsOnly {
-		valid[v] = true
-	}
-
 	for _, tok := range doc.Tokens() {
-
-		//if StringInArrayUpper(tok.Tag, ProseTagList_WordsOnly) {
-		if valid[tok.Tag] {
-			splitted := CamelCaseSplitter(tok.Text)
-			if splitted != tok.Text {
-				var tokens []string
-				tokens = append(tokens, splitted)
-				split_joined := strings.Join(tokens, " ")
-				replacementList[tok.Text] = split_joined
-			}
-
+		splitted := CamelCaseSplitter(tok.Text)
+		if splitted != tok.Text {
+			replacementList[tok.Text] = splitted
 		}
 	}
 	// apply replacements
@@ -272,16 +147,24 @@ func CamelCaseSplitAndRejoin(text string) string {
 	return text
 }
 
+/*
+NormalizeText returns plain(er) text that nlp library can more easily tokenize
+*/
 func NormalizeText(str string) (string, error) {
-	// this should already have been cleaned of anything that goes into an addback list
+	// TODO: Define flags for which normalization functions to apply, i.e.
+	// "plain text" would use the functions shown here but not remove HTML tags
+	// "html text" would strip the HTML tags and perhaps replace some entities with words
+	// "camelCase" would first split any camelCase words so each word could be stemmed
+
 	if str == "" {
 		return str, nil
 	}
 	var err error
-	str = AsciiFold(str)
-	str = RemoveHtmlTag(str)
+	str = ASCIIFold(str)
+	str = RemoveHTMLTags(str)
 	str = RemoveTabsAndLineFeeds(str)
 	str, err = RemoveNonSpaceNonAlphanumeric(str)
+	str = CompressSpaces(str)
 	if err != nil {
 		return "", err
 	}
