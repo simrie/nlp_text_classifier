@@ -73,6 +73,11 @@ ProseAdjAdvWithDeterminers is an array of Prose tokens for nouns, verbs, adjecti
 var ProseAdjAdvWithDeterminers = append(ProseAdjectivesAdverbs, ProseDeterminers...)
 
 /*
+ProseNounsVerbsAdjAdvWithDeterminers is an array of Prose tokens for nouns, verbs, adjectives, adverbs and determiners
+*/
+var ProseNounsVerbsAdjAdvWithDeterminers = append(ProseNounsVerbsAdjAdv, ProseDeterminers...)
+
+/*
 MakeSegmenter converts text to a prose.Document consisting of Prose.tokens
 */
 func MakeSegmenter(text string) (*prose.Document, error) {
