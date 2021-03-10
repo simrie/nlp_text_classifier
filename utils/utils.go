@@ -7,7 +7,7 @@ https://stackoverflow.com/questions/21362950/getting-a-slice-of-keys-from-a-map
 func MapKeysAsStrings(m map[string]interface{}) []string {
 	// TODO: consider if this can be used to
 	// replace MapKeysAsString for Block and WordsSeen
-	keys := make([]string, 0, len(m))
+	keys := make([]string, len(m))
 	i := 0
 	for k := range m {
 		keys[i] = k
@@ -54,7 +54,7 @@ func KeysInCommon(a1, a2 []string) []string {
 
 /*
 KeysDiff returns an array of strings in a1 but not in a2,
-   and an array of strings in a2 but not in a2
+   and an array of strings in a2 but not in a1
 */
 func KeysDiff(a1, a2 []string) ([]string, []string) {
 	var onlyInA1 []string
