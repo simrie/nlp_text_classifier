@@ -9,6 +9,12 @@ go build
 
 go test -v ./nlp
 
+go test -v ./profile
+
+go test -v ./utils
+
+
+
 ## Start Mongo
 
 Navigate to the Mongo directory bin and start Mongo.

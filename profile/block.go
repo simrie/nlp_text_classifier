@@ -30,8 +30,7 @@ func (blockMapType *BlockMapType) UpdateBlockMap(miniStem string, token prose.To
 	var block Block
 	var ok bool
 	var wordSeen = WordSeen{Word: token.Text, Seen: 1}
-	var wordsSeen []WordSeen
-	wordsSeen[0] = wordSeen
+	var wordsSeen []WordSeen = []WordSeen{wordSeen}
 
 	block, ok = blockMap[miniStem]
 	if !ok {
@@ -39,6 +38,7 @@ func (blockMapType *BlockMapType) UpdateBlockMap(miniStem string, token prose.To
 
 		block.Sources = wordsSeen
 		blockMap[miniStem] = block
+		blockMapType.BlockMap = blockMap
 		return nil
 	}
 	var hasWordAt int = -1
@@ -56,6 +56,8 @@ func (blockMapType *BlockMapType) UpdateBlockMap(miniStem string, token prose.To
 	block.Count = block.Count + 1
 	blockMap[miniStem] = block
 
+	blockMapType.BlockMap = blockMap
+
 	return nil
 }
 
@@ -64,7 +66,7 @@ MapKeysAsStrings returns slice of string keys from BlockMapType.BlockMap
 */
 func (blockMapType *BlockMapType) MapKeysAsStrings() []string {
 	blockMap := blockMapType.BlockMap
-	keys := make([]string, 0, len(blockMap))
+	keys := make([]string, len(blockMap))
 	i := 0
 	for k := range blockMap {
 		keys[i] = k

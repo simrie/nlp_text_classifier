@@ -15,7 +15,6 @@ for most nouns, pronouns, verbs, adjectives, adverbs, and the determiner "not"
 These correspond to the Prose Document.Token part-of-speech tags.
 see https://github.com/jdkato/prose#segmenting
 */
-var ProseTagListWordsOnly = []string{"RB", "DT", "NN", "NS", "NNP", "NNPS", "NNS", "JJ", "VB", "VBD", "VBG", "VBG", "VBN"}
 
 /*
 IgnoreMinifiedList is an array of words that can be ignored

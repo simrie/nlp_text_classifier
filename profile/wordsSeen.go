@@ -44,7 +44,7 @@ MapKeysAsStrings returns slice of string keys from WordsSeenMapType.WordsSeenMap
 */
 func (wordsSeenMapType *WordsSeenMapType) MapKeysAsStrings() []string {
 	wordsSeenMap := wordsSeenMapType.WordsSeenMap
-	keys := make([]string, 0, len(wordsSeenMap))
+	keys := make([]string, len(wordsSeenMap))
 	i := 0
 	for k := range wordsSeenMap {
 		keys[i] = k
@@ -80,26 +80,34 @@ func (wordsSeen *WordsSeenType) Combine(inWordsSeen WordsSeenType) error {
 	//  for keys in common between wordsSeenKeys and inWordsSeenKeys
 	//  add the "Seen" count to wordsSeen
 	var keysInCommon []string = utils.KeysInCommon(wordsSeenKeys, inWordsSeenKeys)
+	var newWordsSeen []WordSeen = []WordSeen{}
 
-	for i, key := range keysInCommon {
+	for _, key := range keysInCommon {
 		wordSeen, _ := wordsSeenMap[key]
 		inWordSeen, ok := inWordsSeenMap[key]
 		if ok {
 			wordSeen.Combine(inWordSeen)
 		}
-		wordsSeen.WordsSeen[i] = wordSeen
+		newWordsSeen = append(newWordsSeen, wordSeen)
 	}
 
 	// Find keys to add from inWordsSeenKeys
 	// if inWordsSeen has additional WordsSeen, append those to wordsSeen
-	_, keysToAdd := utils.KeysDiff(wordsSeenKeys, inWordsSeenKeys)
+	keysToAdd, keysToAdd2 := utils.KeysDiff(wordsSeenKeys, inWordsSeenKeys)
+	keysToAdd = append(keysToAdd, keysToAdd2...)
 
 	for _, key := range keysToAdd {
+		wordSeen, ok := wordsSeenMap[key]
+		if ok {
+			newWordsSeen = append(newWordsSeen, wordSeen)
+			continue
+		}
 		inWordSeen, ok := inWordsSeenMap[key]
 		if ok {
-			wordsSeen.WordsSeen = append(wordsSeen.WordsSeen, inWordSeen)
+			newWordsSeen = append(newWordsSeen, inWordSeen)
 		}
 	}
 
+	wordsSeen.WordsSeen = newWordsSeen
 	return nil
 }
