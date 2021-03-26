@@ -176,7 +176,11 @@ func TestBlock_UpdateBlockMapType(t *testing.T) {
 	var blockMapType2 BlockMapType
 	blockMapType2.BlockMap = blockMap2
 
-	var token prose.Token = prose.Token{Tag: "ADJ", Text: "tested"}
+	var token prose.Token = prose.Token{
+		Tag:   "ADJ",
+		Text:  "tested",
+		Label: "",
+	}
 
 	var testBlockMapType = []struct {
 		tname    string
