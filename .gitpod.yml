@@ -6,5 +6,5 @@ tasks:
     command: mkdir -p /workspace/data && mongod --dbpath /workspace/data && go build && ./nlp_text_classifier.exe
 # Ports to expose on workspace startup
 ports:
-  - port: 12345
+  - port: 8080
     onOpen: open-preview
