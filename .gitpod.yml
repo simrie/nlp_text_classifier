@@ -4,3 +4,7 @@ image:
 tasks:
   - init: go get && go build ./... && go test ./...
     command: mkdir -p /workspace/data && mongod --dbpath /workspace/data && go build && ./nlp_text_classifier.exe
+# Ports to expose on workspace startup
+ports:
+  - port: 12345
+    onOpen: open-preview
