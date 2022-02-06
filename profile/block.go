@@ -1,6 +1,8 @@
 package profile
 
 import (
+	"sort"
+
 	"github.com/jdkato/prose/v3"
 )
 
@@ -67,6 +69,7 @@ MapKeysAsStrings returns slice of string keys from BlockMapType.BlockMap
 func (blockMapType *BlockMapType) MapKeysAsStrings() []string {
 	blockMap := blockMapType.BlockMap
 	keys := make([]string, len(blockMap))
+	sort.Strings(keys)
 	i := 0
 	for k := range blockMap {
 		keys[i] = k
