@@ -2,6 +2,7 @@ package profile
 
 import (
 	"nlp_text_classifier/utils"
+	"sort"
 )
 
 /*
@@ -46,6 +47,7 @@ func (wordsSeenMapType *WordsSeenMapType) MapKeysAsStrings() []string {
 	wordsSeenMap := wordsSeenMapType.WordsSeenMap
 	keys := make([]string, len(wordsSeenMap))
 	i := 0
+	sort.Strings(keys)
 	for k := range wordsSeenMap {
 		keys[i] = k
 		i++

@@ -40,26 +40,26 @@ The following assume that the API server is running locally and has successfully
 ### List the names of all databases
 
 ```
-curl "http://127.0.0.1:12345/databases"
+curl "http://127.0.0.1:8080/databases"
 ```
 
 
 ### List all "profile" collection documents in a database
 
 ```
-curl "http://127.0.0.1:12345/profiles/db/{database name}"
+curl "http://127.0.0.1:8080/profiles/db/{database name}"
 ```
 
 ### Return a profile object from a database by its id string
 
 ```
-curl "http://127.0.0.1:12345/db/{database_name}/id/{id}"
+curl "http://127.0.0.1:8080/db/{database_name}/id/{id}"
 ```
 
 ### Send a rawDoc object and receive (but do not store) a Profile object
 
 ```
-curl -X POST --data '{\"key\":\"BabyChickenDoc\",\"text\":\"Chicks are baby chickens that are cute little chicken babies\",\"tag\":\"cuteness\"}' -H 'Content-Type: application/json' -H 'Accept: application/json'  http://127.0.0.1:12345/profile
+curl -X POST --data '{\"key\":\"BabyChickenDoc\",\"text\":\"Chicks are baby chickens that are cute little chicken babies\",\"tag\":\"cuteness\"}' -H 'Content-Type: application/json' -H 'Accept: application/json'  http://127.0.0.1:8080/profile
 ```
 
 The profile returned contains the minified stems and original word counts:

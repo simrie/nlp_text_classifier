@@ -53,5 +53,5 @@ func StartRouter(dbPool db.Pool) {
 	router.HandleFunc("/databases", HandlerSelector(dbPool, "/databases")).Methods("GET")
 	router.HandleFunc("/profiles/db/{db}", HandlerSelector(dbPool, "/profiles/db/")).Methods("GET")
 	router.HandleFunc("/profile/db/{db}/id/{id}", HandlerSelector(dbPool, "/profile/db/id/")).Methods("GET")
-	http.ListenAndServe(":12345", router)
+	http.ListenAndServe(":8080", router)
 }
