@@ -4,4 +4,5 @@ image:
 tasks:
   - init: go get && go build ./... && go test ./...
     command: mkdir -p /workspace/data && mongod --dbpath /workspace/data
-    command: ./nlp_text_classifier
+    command: go build
+    command: ./nlp_text_classifier.exe
